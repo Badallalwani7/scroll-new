@@ -15,8 +15,8 @@
         :root {
             --bg: #000;
             --white: #fff;
-            --drift: #FF3B30; /* Red */
-            --focus: #007AFF; /* Blue */
+            --drift: #FF3B30;
+            --focus: #007AFF;
             --border: rgba(255, 255, 255, 0.1);
             --glass: rgba(0, 0, 0, 0.85);
         }
@@ -68,11 +68,42 @@
         .highlight-drift { color: var(--drift); }
         .highlight-focus { color: var(--focus); }
 
+        /* --- Form Card (replaces pill for multi-field forms) --- */
+        .form-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row input {
+            flex: 1;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 100px;
+            outline: none;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.4s;
+        }
+
+        .form-row input:focus {
+            border-color: var(--white);
+        }
+
         /* --- Interactive Forms --- */
         .form-pill {
             display: flex; background: rgba(255,255,255,0.02); 
             border: 1px solid var(--border); padding: 8px; 
-            border-radius: 100px; max-width: 500px; width: 100%;
+            border-radius: 100px; width: 100%;
             backdrop-filter: blur(20px); transition: border-color 0.4s;
         }
         .form-pill:focus-within { border-color: var(--white); }
@@ -80,6 +111,7 @@
         .btn-submit { 
             background: white; color: black; border: none; padding: 16px 35px; 
             border-radius: 100px; font-weight: 800; cursor: pointer; transition: 0.3s; 
+            white-space: nowrap;
         }
 
         /* --- Bento Feature Grid --- */
@@ -111,6 +143,7 @@
             .tile { grid-column: span 12; }
             h1 { font-size: 3.5rem; }
             section { padding: 80px 6%; }
+            .form-row { flex-direction: column; }
         }
     </style>
 </head>
@@ -137,10 +170,16 @@
                 <h1>Face the <br><span class="highlight-drift">Digital Drift.</span></h1>
                 <p>ScrollTrace is a clinical-grade tracker for Instagram Reels and YouTube Shorts. Measure your vertical depth, reclaim your hours, and stabilize your baseline.</p>
                 
-                <form class="form-pill" action="https://api.web3forms.com/submit" method="POST">
+                <form class="form-card" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="22debfa5-224f-43f9-8bea-94bb1bd6d917">
-                    <input type="email" name="email" placeholder="Email for private access" required>
-                    <button type="submit" class="btn-submit">Join Beta</button>
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                        <input type="tel" name="phone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="form-pill">
+                        <input type="email" name="email" placeholder="Email for private access" required>
+                        <button type="submit" class="btn-submit">Join Beta</button>
+                    </div>
                 </form>
             </div>
         </section>
@@ -178,11 +217,17 @@
                 <h2 class="highlight-focus">Android Developer Beta</h2>
                 <p>Help us refine the core Accessibility Engine. We are looking for early adopters to help us shape the future of digital health.</p>
                 
-                <form class="form-pill" style="border-color: rgba(0, 122, 255, 0.3);" action="https://api.web3forms.com/submit" method="POST">
+                <form class="form-card" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="22debfa5-224f-43f9-8bea-94bb1bd6d917">
                     <input type="hidden" name="Subject" value="New Android Developer Beta Applicant">
-                    <input type="email" name="email" placeholder="Google Play Developer Email" required>
-                    <button type="submit" class="btn-submit" style="background: var(--focus); color: #fff;">Request Access</button>
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Full Name" required style="border-color: rgba(0, 122, 255, 0.3);">
+                        <input type="tel" name="phone" placeholder="Phone Number" required style="border-color: rgba(0, 122, 255, 0.3);">
+                    </div>
+                    <div class="form-pill" style="border-color: rgba(0, 122, 255, 0.3);">
+                        <input type="email" name="email" placeholder="Google Play Developer Email" required>
+                        <button type="submit" class="btn-submit" style="background: var(--focus); color: #fff;">Request Access</button>
+                    </div>
                 </form>
             </div>
         </section>
@@ -256,7 +301,8 @@
                     if (response.ok) {
                         btn.innerText = "✓ On the list";
                         btn.style.background = "#3DDC84";
-                        form.querySelector('input[type="email"]').value = "";
+                        btn.style.color = "#000";
+                        form.querySelectorAll('input[type="email"], input[type="text"], input[type="tel"]').forEach(i => i.value = "");
                     } else {
                         btn.innerText = "Error";
                     }
@@ -266,6 +312,7 @@
                     setTimeout(() => {
                         btn.innerText = originalText;
                         btn.style.background = "";
+                        btn.style.color = "";
                         btn.disabled = false;
                     }, 3000);
                 });
